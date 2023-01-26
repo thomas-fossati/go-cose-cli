@@ -57,6 +57,17 @@ func MustLoadSignerFromFile(sAlg, sKeyFile string) cose.Signer {
 	return signer
 }
 
+func MustLoadTBSPayload() []byte {
+	r := bufio.NewReader(os.Stdin)
+
+	tbsPayload, err := ioutil.ReadAll(r)
+	if err != nil {
+		log.Fatalf("reading from stdin: %s", err)
+	}
+
+	return tbsPayload
+}
+
 func main() {
 	var sAlg, sKeyFile string
 
@@ -67,21 +78,14 @@ func main() {
 
 	signer := MustLoadSignerFromFile(sAlg, sKeyFile)
 
+	tbsPayload := MustLoadTBSPayload()
+
 	headers := cose.Headers{}
 
-	r := bufio.NewReader(os.Stdin)
-
-	payload, err := ioutil.ReadAll(r)
-	if err != nil {
-		log.Fatalf("reading from stdin: %s", err)
-	}
-
-	sig, err := cose.Sign1(rand.Reader, signer, headers, payload, nil)
+	sig, err := cose.Sign1(rand.Reader, signer, headers, tbsPayload, nil)
 	if err != nil {
 		log.Fatalf("sign1 failed: %v", err)
 	}
-
-	fmt.Println("message signed")
 
 	fmt.Printf("%x\n", sig)
 }
