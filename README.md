@@ -1,5 +1,5 @@
 # go-cose-cli
-command line interface around veraison/go-cose
+command line interface around [veraison/go-cose](https://github.com/veraison/go-cose)
 
 ## Install
 
