@@ -7,7 +7,7 @@ import (
 	"crypto/rand"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 
@@ -27,7 +27,7 @@ func nameToAlg(name string) (error, cose.Algorithm) {
 }
 
 func MustLoadSignerFromFile(sAlg, sKeyFile string) cose.Signer {
-	rawSKey, err := ioutil.ReadFile(sKeyFile)
+	rawSKey, err := os.ReadFile(sKeyFile)
 	if err != nil {
 		log.Fatalf("unable to read private key file: %v", err)
 	}
@@ -60,7 +60,7 @@ func MustLoadSignerFromFile(sAlg, sKeyFile string) cose.Signer {
 func MustLoadTBSPayload() []byte {
 	r := bufio.NewReader(os.Stdin)
 
-	tbsPayload, err := ioutil.ReadAll(r)
+	tbsPayload, err := io.ReadAll(r)
 	if err != nil {
 		log.Fatalf("reading from stdin: %s", err)
 	}
